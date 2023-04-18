@@ -1,13 +1,10 @@
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Euclidean_Distance {
 
-    public static void CalculateED(City[] cities) throws IOException {
+    public static void CalculateED(City[] cities) {
 
         double[][] distances = new double[cities.length][cities.length];
-        int[] node = new int[cities.length];
 
         for (int i = 0; i < cities.length; i++) {
             for (int j = i+1; j < cities.length; j++) {
@@ -21,56 +18,41 @@ public class Euclidean_Distance {
 
             }
         }
-        double initialTemp=getAverageCost(distances,30);
+
+        //Tabu Search
+        TabuSearch ts = new TabuSearch();
+        int[] best_solution = ts.tabuSearch(distances, 400, 45);
+
+        System.out.println(Arrays.toString(best_solution));
+        System.out.println("Total Distance travelled(TS): "+ts.getCost(best_solution,distances));
+        Visualiser.visualize(cities,best_solution,"TSP Solution for Tabu Search.jpg");
+
+        //End
+
+
+        //Simulated Annealing
+        double initialTemp= SimulatedAnnealing.getAverageCost(distances,1000);
         double coolingRate = 0.85;
         SimulatedAnnealing sa = new SimulatedAnnealing(distances, initialTemp, coolingRate);
-        sa.solve(500);
-        int[] bestSolution = sa.getBestSolution();
+        sa.solve(1500);
 
-        double totalDistance=calculateCost(bestSolution,distances);
+        int[] bestSolution = sa.getBestSolution();
+        double totalDistance = SimulatedAnnealing.calculateCost(bestSolution, distances);
 
         System.out.println(Arrays.toString(bestSolution));
-        System.out.println("Total distance traveled: " + totalDistance);
-        
-        Visualiser.visualize(cities, bestSolution);
-    }
+        System.out.println("Total distance traveled(SA): " + totalDistance);
+        Visualiser.visualize(cities, bestSolution,"TSP Solution for Simulated Annealing.jpg");
+        //End
 
-    public static double getAverageCost(double[][] distances, int numRandomSolutions) {
-        int numCities = distances.length;
-        double totalCost = 0.0;
-        Random rand = new Random();
+        //Nearest Neighbour with 3-OPT
+        NN_3OPT nn = new NN_3OPT(distances);
+        nn.run();
 
-        for (int i = 0; i < numRandomSolutions; i++) {
-            int[] solution = new int[numCities];
-            for (int j = 0; j < numCities; j++) {
-                solution[j] = j;
-            }
-            shuffleArray(solution, rand);
-            double cost = calculateCost(solution, distances);
-            totalCost += cost;
-        }
-
-        return numRandomSolutions*(totalCost / numRandomSolutions);
-    }
-
-    private static void shuffleArray(int[] array, Random rand) {
-        int n = array.length;
-        for (int i = n - 1; i > 0; i--) {
-            int j = rand.nextInt(i + 1);
-            int temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-    }
-
-    private static double calculateCost(int[] solution, double[][] distances) {
-        int numCities = solution.length;
-        double cost = 0.0;
-        for (int i = 0; i < numCities; i++) {
-            int j = (i + 1) % numCities;
-            cost += distances[solution[i]][solution[j]];
-        }
-        return cost;
+        int[] bestRoute = nn.getBestRoute();
+        System.out.println(Arrays.toString(bestRoute));
+        System.out.println("Total Distance travelled(NN_3OPT):"+nn.getBestDistance());
+        Visualiser.visualize(cities,nn.getBestRoute(),"TSP Solution for Nearest Neighbour with 3 OPT.jpg");
+        //End
     }
 
 }

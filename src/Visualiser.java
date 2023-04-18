@@ -1,13 +1,7 @@
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.layout.mxGraphLayout;
-import com.mxgraph.layout.mxParallelEdgeLayout;
-import com.mxgraph.layout.mxStackLayout;
-import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.view.mxGraph;
-
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,45 +9,47 @@ import java.io.IOException;
 
 public class Visualiser {
 
-    public static void visualize(City[] cities, int[] bestSolution) throws IOException {
+    public static void visualize(City[] cities, int[] bestSolution, String filename) {
         mxGraph graph = new mxGraph();
         Object parent = graph.getDefaultParent();
 
-        // Create vertexes for each city
+
+        // Add vertices for each city
         Object[] vertexes = new Object[cities.length];
         for (int i = 0; i < cities.length; i++) {
-            vertexes[i] = graph.insertVertex(parent, null, cities[i].node, cities[i].x_Coordinates * 4, cities[i].y_Coordinates * 4, 30, 30);
+            vertexes[i] = graph.insertVertex(parent, null, "City " + cities[i].getNode(), cities[i].getX(), cities[i].getY(), 80, 80);
+            mxCell vertex = (mxCell) vertexes[i];
+            vertex.setStyle("ROUNDED;strokeColor=red;fillColor=yellow");
+
         }
 
         // Add edges between cities in the order specified by the solution
-        for (int i = 0; i < bestSolution.length; i++) {
-            int j = (i + 1) % bestSolution.length;
-            graph.insertEdge(parent, null, "", vertexes[bestSolution[i]], vertexes[bestSolution[j]]);
+        Object[] edges = new Object[cities.length];
+        double totalDistance = 0.0;
+        for (int i = 0; i < bestSolution.length - 1; i++) {
+            int cityAIndex = bestSolution[i];
+            int cityBIndex = bestSolution[i + 1];
+            double xDiff = cities[cityBIndex].getX() - cities[cityAIndex].getX();
+            double yDiff = cities[cityBIndex].getY() - cities[cityAIndex].getY();
+            double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+            totalDistance += distance;
+            edges[i] = graph.insertEdge(parent, null, String.format("%.2f", distance), vertexes[cityAIndex], vertexes[cityBIndex]);
+            mxCell edge = (mxCell) edges[i];
+            edge.setStyle("strokeColor=blue");
         }
+        saveGraphAsJpg(graph,filename);
+    }
 
-        // Apply some layout algorithms to make the graph look nicer
-        mxParallelEdgeLayout parallelEdgeLayout = new mxParallelEdgeLayout(graph);
-        parallelEdgeLayout.execute(parent);
 
-        mxStackLayout stackLayout = new mxStackLayout(graph);
-        stackLayout.execute(parent);
-
-        mxGraphLayout layout = new mxHierarchicalLayout(graph, SwingConstants.WEST);
-        layout.setUseBoundingBox(false);
-        layout.execute(graph.getDefaultParent());
-
-        // Create a Swing component to display the graph
-        mxGraphComponent graphComponent = new mxGraphComponent(graph);
-        graphComponent.setPreferredSize(new Dimension(1920, 1080));
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(graphComponent);
-        frame.pack();
-        frame.setVisible(true);
-
-        BufferedImage image = mxCellRenderer.createBufferedImage(graph, null, 2, Color.WHITE, true, null);
-        File file = new File("graph.jpg");
-        ImageIO.write(image, "jpg", file);
+    public static void saveGraphAsJpg(mxGraph graph, String filename) {
+        try {
+            BufferedImage image = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, true, null);
+            File output = new File(filename);
+            ImageIO.write(image, "jpg", output);
+            System.out.println("Saved graph as JPG file: "+ filename+ "\n");
+        } catch (IOException e) {
+            System.err.println("Error saving graph as JPG file: " + e.getMessage());
+        }
     }
 
 }

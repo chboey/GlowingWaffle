@@ -9,6 +9,18 @@ public class City {
         this.y_Coordinates = yCoordinates;
     }
 
+    public int getNode() {
+        return node;
+    }
+    public double getX() {
+        return x_Coordinates;
+    }
+
+    public double getY() {
+        return y_Coordinates;
+    }
+
+
     @Override
     public String toString() {
         return "City{" +
