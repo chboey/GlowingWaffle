@@ -14,7 +14,6 @@ public class Visualiser {
         Object parent = graph.getDefaultParent();
 
 
-        // Add vertices for each city
         Object[] vertexes = new Object[cities.length];
         for (int i = 0; i < cities.length; i++) {
             vertexes[i] = graph.insertVertex(parent, null, "City " + cities[i].getNode(), cities[i].getX(), cities[i].getY(), 80, 80);
@@ -23,7 +22,6 @@ public class Visualiser {
 
         }
 
-        // Add edges between cities in the order specified by the solution
         Object[] edges = new Object[cities.length];
         double totalDistance = 0.0;
         for (int i = 0; i < bestSolution.length - 1; i++) {
