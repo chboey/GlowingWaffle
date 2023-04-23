@@ -8,33 +8,35 @@ public class NN_3OPT {
     }
 
     public void run() {
-        int n = distances.length;
-        boolean[] visited = new boolean[n];
-        int[] route = new int[n+1];
-        int startNode = (int) (Math.random() * n); // generate random starting node
-        route[0] = startNode;
-        visited[startNode] = true;
-        for (int i = 1; i < n; i++) {
-            int current = route[i-1];
+        boolean[] visited = new boolean[distances.length];
+        int[] route = new int[distances.length+1];
+
+        int start_Node = (int) (Math.random() * distances.length); // generate random starting node
+        route[0] = start_Node;
+        visited[start_Node] = true;
+
+        for (int i = 1; i < distances.length; i++) {
+            int current_Node = route[i-1];
             int next = -1;
             int minDist = Integer.MAX_VALUE;
-            for (int j = 0; j < n; j++) {
-                if (!visited[j] && distances[current][j] < minDist) {
+            for (int j = 0; j < distances.length; j++) {
+                if (!visited[j] && distances[current_Node][j] < minDist) {
                     next = j;
-                    minDist = (int) distances[current][j];
+                    minDist = (int) distances[current_Node][j];
                 }
             }
+
             route[i] = next;
             visited[next] = true;
         }
 
-        route[n] = startNode;
+        route[distances.length] = start_Node;
         int distance = calculateDistance(route);
         while (true) {
             boolean improvement = false;
-            for (int i = 0; i < n-2; i++) {
-                for (int j = i+1; j < n-1; j++) {
-                    for (int k = j+1; k < n; k++) {
+            for (int i = 0; i < distances.length-2; i++) {
+                for (int j = i+1; j < distances.length-1; j++) {
+                    for (int k = j+1; k < distances.length; k++) {
                         int[] newRoute = threeOptSwap(route, i, j, k);
                         int newDistance = calculateDistance(newRoute);
                         if (newDistance < distance) {

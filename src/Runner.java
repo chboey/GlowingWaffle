@@ -24,6 +24,6 @@ public class Runner {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Euclidean_Distance.CalculateED(cities);
+        Driver.CalculateED(cities);
     }
 }

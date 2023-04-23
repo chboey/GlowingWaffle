@@ -1,18 +1,18 @@
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class TabuSearch {
 
-    public int[] tabuSearch(double[][] distances, int maxIterations, int tabuSize) {
-
+    public int[] tabuSearch(double[][] distances, int maxIterations, int tabuSize, boolean includeFirstNode) {
         int[] current_Solution = getRandomSolution(distances.length);
         int[] best_Solution = current_Solution.clone();
 
-        int[] tabuList = new int[tabuSize];
-
+        Set<Integer> tabuList = new HashSet<>();
         int tabuIndex = 0;
 
-        int currentCost = getCost(current_Solution, distances);
+        int currentCost = getCost(current_Solution, distances, includeFirstNode);
         int bestCost = currentCost;
 
         for (int i = 0; i < maxIterations; i++) {
@@ -22,9 +22,9 @@ public class TabuSearch {
             int[][] neighborhood = getNeighborhood(current_Solution);
 
             for (int[] neighbor : neighborhood) {
-                int neighborCost = getCost(neighbor, distances);
+                int neighborCost = getCost(neighbor, distances, includeFirstNode);
 
-                if (!contains(tabuList, neighbor) && neighborCost < candidateCost) {
+                if (!tabuList.contains(Arrays.hashCode(neighbor)) && neighborCost < candidateCost) {
                     candidate = neighbor;
                     candidateCost = neighborCost;
                 }
@@ -38,17 +38,21 @@ public class TabuSearch {
             currentCost = candidateCost;
 
             if (currentCost < bestCost) {
-                best_Solution = current_Solution.clone();
-                best_Solution[current_Solution.length-1] = current_Solution[0];
+                best_Solution = Arrays.copyOf(current_Solution, current_Solution.length + 1);
+                best_Solution[current_Solution.length] = best_Solution[0];
                 bestCost = currentCost;
             }
 
-            tabuList[tabuIndex % tabuSize] = Arrays.hashCode(candidate);
-            tabuIndex++;
+
+            tabuList.add(Arrays.hashCode(candidate));
+            if (tabuList.size() > tabuSize) {
+                tabuList.remove(tabuList.iterator().next());
+            }
         }
 
         return best_Solution;
     }
+
 
     public static int[] getRandomSolution(int n) {
         int[] solution = new int[n];
@@ -84,15 +88,25 @@ public class TabuSearch {
         return neighbor;
     }
 
-    public int getCost(int[] solution, double[][] distances) {
-        double cost = distances[solution[solution.length-1]][solution[0]];
+    public static int getCost(int[] solution, double[][] distances, boolean includeFirstNode) {
+        int cost = 0;
+        int n = solution.length - 1; // subtract 1 for the first node
 
-        for (int i = 0; i < solution.length-1; i++) {
-            cost += distances[solution[i]][solution[i+1]];
+        if (includeFirstNode) {
+            for (int i = 0; i < n; i++) {
+                cost += distances[solution[i]][solution[(i + 1) % n]];
+            }
+            cost += distances[solution[n]][solution[0]]; // add distance from last node to first node
+        } else {
+            for (int i = 1; i < n; i++) { // start at index 1 for the second node
+                cost += distances[solution[i - 1]][solution[i]];
+            }
+            cost += distances[solution[n - 1]][solution[n]]; // add distance from second-last node to last node
         }
 
-        return (int) Math.round(cost);
+        return cost;
     }
+
 
 
     public static boolean contains(int[] tabuList, int[] solution) {

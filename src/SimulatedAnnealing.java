@@ -2,90 +2,94 @@ import java.util.Arrays;
 import java.util.Random;
 
 class SimulatedAnnealing{
-    private int[] currentSolution;
-    private int[] bestSolution;
+    private int[] current_solution;
+    private int[] best_solution;
     private final double[][] distances;
-    private final int numCities;
-    private double temperature;
-    private final double coolingRate;
+    private final int num_cities;
+    private double temp;
+    private final double cooling_rate;
 
-    public SimulatedAnnealing(double[][] distances, double initialTemperature, double coolingRate) {
+    public SimulatedAnnealing(double[][] distances, double initial_temp, double cooling_rate) {
 
         this.distances = distances;
-        this.numCities = distances.length;
-        this.temperature = initialTemperature;
-        this.coolingRate = coolingRate;
-        this.currentSolution = new int[numCities];
-        this.bestSolution = new int[numCities];
+        this.num_cities = distances.length;
+        this.temp = initial_temp;
+        this.cooling_rate = cooling_rate;
+        this.current_solution = new int[num_cities];
+        this.best_solution = new int[num_cities];
 
-        for (int i = 0; i < numCities; i++) {
-            this.currentSolution[i] = i;
-            this.bestSolution[i] = i;
+        for (int i = 0; i < num_cities; i++) {
+            this.current_solution[i] = i;
+            this.best_solution[i] = i;
         }
-        shuffleArray(currentSolution);
+        //shuffle_arr(current_solution);
     }
 
-    public void solve(int numIterations) {
-        double currentEnergy = getEnergy(currentSolution);
-        double bestEnergy = currentEnergy;
+    public int[] solve(int iteration) {
+        double current_energy = get_energy(current_solution);
+        double bestEnergy = current_energy;
+        int[] bestSolution = Arrays.copyOf(current_solution, num_cities);
 
-        for (int i = 0; i < numIterations; i++) {
-            int[] newSolution = Arrays.copyOf(currentSolution, numCities);
-            int city1 = (int) (numCities * Math.random());
-            int city2 = (int) (numCities * Math.random());
-            swapCities(newSolution, city1, city2);
-            double newEnergy = getEnergy(newSolution);
-            if (shouldAccept(currentEnergy, newEnergy, temperature)) {
-                currentSolution = newSolution;
-                currentEnergy = newEnergy;
+        for (int i = 0; i < iteration; i++) {
+            int[] new_solution = Arrays.copyOf(current_solution, num_cities);
+
+            int city_x = (int) (num_cities * Math.random());
+            int city_y = (int) (num_cities * Math.random());
+
+            swap_cities(new_solution, city_x, city_y);
+
+            double new_energy = get_energy(new_solution);
+
+            if (acceptance_rate(current_energy, new_energy, temp) == 1.0) {
+                current_solution = new_solution;
+                current_energy = new_energy;
             }
-            if (currentEnergy < bestEnergy) {
-                bestSolution = Arrays.copyOf(currentSolution, numCities);
-                bestEnergy = currentEnergy;
-                bestSolution[numCities-1] = bestSolution[0];
+            if (current_energy < bestEnergy) {
+                bestSolution = Arrays.copyOf(current_solution, num_cities);
+                bestEnergy = current_energy;
+                bestSolution[num_cities - 1] = bestSolution[0];
             }
-            temperature *= coolingRate;
+            temp *= cooling_rate;
         }
+
+        return bestSolution;
     }
 
-    private double getEnergy(int[] solution) {
+    private double get_energy(int[] solution) {
         double energy = 0;
-        for (int i = 0; i < numCities; i++) {
-            int j = (i + 1) % numCities;
+        for (int i = 0; i < num_cities; i++) {
+            int j = (i + 1) % num_cities;
             energy += distances[solution[i]][solution[j]];
         }
         return energy;
     }
 
-    private boolean shouldAccept(double currentEnergy, double newEnergy, double temperature) {
+    private double acceptance_rate(double currentEnergy, double newEnergy, double temperature) {
         if (newEnergy < currentEnergy) {
-            return true;
+            return 1.0;
         }
-        double acceptanceProbability = Math.exp((currentEnergy - newEnergy) / temperature);
-        return Math.random() < acceptanceProbability;
+        return Math.exp((currentEnergy - newEnergy) / temperature);
     }
 
-    private void shuffleArray(int[] array) {
+    private void shuffle_arr(int[] arr) {
         Random random = new Random();
-        for (int i = array.length - 1; i > 0; i--) {
-            int index = random.nextInt(i + 1);
-            int temp = array[index];
-            array[index] = array[i];
-            array[i] = temp;
+        for (int i = arr.length - 1; i > 0; i--) {
+            int idx = random.nextInt(i + 1);
+            int temp = arr[idx];
+            arr[idx] = arr[i];
+            arr[i] = temp;
         }
     }
 
-    private void swapCities(int[] array, int i, int j) {
+
+    private void swap_cities(int[] array, int i, int j) {
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
 
-    public int[] getBestSolution() {
-        return bestSolution;
-    }
 
-    private static void shuffleArray(int[] array, Random rand) {
+    private static void shuffle_array(int[] array, Random rand) {
         int n = array.length;
         for (int i = n - 1; i > 0; i--) {
             int j = rand.nextInt(i + 1);
@@ -95,7 +99,7 @@ class SimulatedAnnealing{
         }
     }
 
-    static double calculateCost(int[] solution, double[][] distances) {
+    static double calculate_cost(int[] solution, double[][] distances) {
         int numCities = solution.length;
         double cost = 0.0;
         for (int i = 0; i < numCities; i++) {
@@ -105,22 +109,48 @@ class SimulatedAnnealing{
         return cost;
     }
 
-    public static double getAverageCost(double[][] distances, int numRandomSolutions) {
-        int numCities = distances.length;
-        double totalCost = 0.0;
+    public static double get_average_cost(double[][] distances, int numRandomSolutions) {
+        int num_cities = distances.length;
+        double total_cost = 0.0;
         Random rand = new Random();
 
         for (int i = 0; i < numRandomSolutions; i++) {
-            int[] solution = new int[numCities];
-            for (int j = 0; j < numCities; j++) {
+            int[] solution = new int[num_cities];
+            for (int j = 0; j < num_cities; j++) {
                 solution[j] = j;
             }
-            shuffleArray(solution, rand);
-            double cost = calculateCost(solution, distances);
-            totalCost += cost;
+            shuffle_array(solution, rand);
+            double cost = calculate_cost(solution, distances);
+            total_cost += cost;
         }
 
-        return numRandomSolutions*(totalCost / numRandomSolutions);
+        return numRandomSolutions*(total_cost / numRandomSolutions);
     }
+
+    public double[] getTotalDistances(int numIterations) {
+        double[] totalDistances = new double[numIterations];
+
+        for (int i = 0; i < numIterations; i++) {
+            int[] currentSolution = solve(numIterations);
+            double totalDistance = 0;
+
+            for (int j = 0; j < num_cities - 1; j++) {
+                int city1 = currentSolution[j];
+                int city2 = currentSolution[j + 1];
+                totalDistance += distances[city1][city2];
+            }
+
+            totalDistance += distances[currentSolution[num_cities - 1]][currentSolution[0]];
+            totalDistances[i] = totalDistance;
+
+        }
+
+        return totalDistances;
+    }
+
+
+
+
+
 
 }
