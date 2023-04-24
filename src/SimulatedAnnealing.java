@@ -22,7 +22,7 @@ class SimulatedAnnealing{
             this.current_solution[i] = i;
             this.best_solution[i] = i;
         }
-        //shuffle_arr(current_solution);
+        shuffle_arr(current_solution);
     }
 
     public int[] solve(int iteration) {

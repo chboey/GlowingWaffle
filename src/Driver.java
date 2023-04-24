@@ -1,3 +1,16 @@
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 
 public class Driver {
@@ -23,7 +36,7 @@ public class Driver {
         //Tabu Search
         TabuSearch ts = new TabuSearch();
         long start_time_TS = System.nanoTime();
-        int[] best_solution = ts.tabuSearch(distances, 1000, 14, true);
+        int[] best_solution = ts.tabuSearch(distances, 1000, 55, true);
         long end_time_TS = System.nanoTime();
 
         System.out.println(Arrays.toString(best_solution));
@@ -62,12 +75,42 @@ public class Driver {
         //Visualiser for iterations!, Commented this part out as it was only necessary for the report-side of the assignment
         //double[] totalDistances = new double[10000];
         //for (int i = 1; i <= 10000; i++) {
-        //    TabuSearch ts = new TabuSearch();
-        //    int[] currentSolution = ts.tabuSearch(distances, i, 25);
-        //    double tD = TabuSearch.getCost(currentSolution,distances);
+        //    SimulatedAnnealing sa = new SimulatedAnnealing(distances,initialTemp,0.005);
+        //    int[] currentSolution = sa.solve(10000);
+        //    double tD = TabuSearch.getCost(currentSolution,distances,true);
         //   totalDistances[i-1] = tD;
         //}
         //ChartVisualizer.visualize(10000,totalDistances);
         //End
+
+        //SA Visualiser for Cooling Rate
+        /*DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (double coolingRate = 0; coolingRate <= 0.99; coolingRate += 0.01) {
+            double initialTemp1 = SimulatedAnnealing.get_average_cost(distances, 3);
+            SimulatedAnnealing sa1 = new SimulatedAnnealing(distances, initialTemp1, coolingRate);
+            int[] solution = sa1.solve(100000);
+            double totalDistance1 = SimulatedAnnealing.calculate_cost(solution, distances);
+            dataset.addValue(totalDistance1, "Total Distance", String.format("%.2f", coolingRate));
+        }
+        JFreeChart chart = ChartFactory.createLineChart(
+                "Total Distance vs Cooling Rate",
+                "Cooling Rate",
+                "Total Distance",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+
+        ChartPanel chartPanel = new ChartPanel(chart);
+        JFrame frame = new JFrame();
+        frame.setContentPane(chartPanel);
+        frame.setSize(800, 600);
+        frame.setVisible(true);
+
+         */
     }
 }

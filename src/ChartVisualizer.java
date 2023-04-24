@@ -3,6 +3,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
@@ -27,7 +28,11 @@ public class ChartVisualizer {
                 "Total Distance vs Iteration", // chart title
                 "Iteration", // x axis label
                 "Total Distance", // y axis label
-                dataset
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, // show legend
+                true, // use tooltips
+                false // generate URLs
         );
 
         // Customize plot
@@ -42,7 +47,6 @@ public class ChartVisualizer {
         domain.setTickUnit(new NumberTickUnit(1000));
         domain.setTickMarkInsideLength(5f);
         domain.setTickMarkOutsideLength(0f);
-        domain.setMinorTickCount(0);
 
         // Customize y-axis
         NumberAxis range = (NumberAxis) plot.getRangeAxis();
@@ -51,8 +55,7 @@ public class ChartVisualizer {
         range.setTickUnit(new NumberTickUnit(5000));
         range.setTickMarkInsideLength(5f);
         range.setTickMarkOutsideLength(0f);
-        range.setMinorTickCount(0);
-        range.setTickUnit(new NumberTickUnit(50000, new DecimalFormat("###,###,###,##0.00")));
+        range.setTickUnit(new NumberTickUnit(5000, new DecimalFormat("###,###,###,##0.00")));
 
 
         // Customize renderer
