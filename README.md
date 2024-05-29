@@ -85,7 +85,8 @@ Tabu Search	117538	2,985,697,400
 
 ## Sensitivity Analysis
 
-Simulated Annealing Cooling Rate: Adjusting the cooling rate had little effect on the total distance for large iterations. \\
+Simulated Annealing Cooling Rate: Adjusting the cooling rate had little effect on the total distance for large iterations.
+
 Tabu Size in Tabu Search: Larger tabu sizes generally resulted in worse solutions due to the algorithm rejecting better solutions that were too similar to previous ones.
 
 ## Conclusion
