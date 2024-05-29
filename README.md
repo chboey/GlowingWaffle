@@ -1,30 +1,26 @@
-Implementation of Tabu Search, SimulatedAnnealing, and Nearest Neighbourhood with 3-OPT
+# Exploring the Best Algorithmic Approaches for the Travelling Salesman Problem
 
-Graph generated using JSwing and jgraphx and jfreechart
+## Introduction
+The Travelling Salesman Problem (TSP) is a classic optimization problem where the goal is to find the shortest possible route that visits each city exactly once and returns to the origin city. This project compares heuristic and metaheuristic algorithms in terms of solution quality and computation time.
+
+## Literature Review
+### Approximation Algorithms
+Approximation algorithms provide near-optimal solutions to NP-hard problems within a reasonable amount of time.
+
+### Heuristic Algorithms
+Heuristic algorithms, like Tabu Search and Nearest Neighbour with 3-OPT, use educated assumptions to explore potential solutions quickly but may require parameter tuning.
+
+### Metaheuristic Algorithms
+Metaheuristic algorithms, such as Simulated Annealing, are more flexible and can solve various problems without extensive customization.
+
+## Methodology
+### Algorithms and Parameters
+Three algorithms were chosen for benchmarking:
+
+| Algorithm                  | Parameters                                    |
+|----------------------------|-----------------------------------------------|
+| Nearest Neighbour with 3-OPT | N/A                                         |
+| Tabu Search                | Maximum Iterations: 1000, Tabu Size: 14       |
+| Simulated Annealing        | Cooling Rate: <1.00, Initial Temperature: Calculated, Iteration Count: 100000 |
 
 
-TSP Solution using Tabu Search
--
-<p align="center">
-  <img src="/TSP%20Solution%20for%20Tabu%20Search.jpg" width="450" title="Tabu Search" alt="TSP solution using Tabu Search">
-</p>
-
-TSP solution using Simulated Annealing
--
-<p align="center">
-  <img src="TSP%20Solution%20for%20Simulated%20Annealing.jpg" width="450" title="Tabu Search" alt="TSP solution using Tabu Search">
-</p>
-
-TSP solution using Nearest Neighbourhood with 3-OPT
--
-<p align="center">
-  <img src="TSP%20Solution%20for%20Nearest%20Neighbour%20with%203%20OPT.jpg" width="450" title="Tabu Search" alt="TSP solution using Tabu Search">
-</p>
-
-How to run
------------
-1) Import all jar files available in this project, jfreechart.jar, jgraphx-4.2.2.jar and under the jfreechart folder, import all of the
-    jar files there too!
-2) Run from the Runner class, using Java 19.1
-3) The results would be displayed in the console, the visualiser would save the route taken by each algorithm, and save
-   it into a jpg file in the root folder.
