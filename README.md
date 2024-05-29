@@ -23,4 +23,40 @@ Three algorithms were chosen for benchmarking:
 | Tabu Search                | Maximum Iterations: 1000, Tabu Size: 14       |
 | Simulated Annealing        | Cooling Rate: <1.00, Initial Temperature: Calculated, Iteration Count: 100000 |
 
+### Pseudocode
+**Nearest Neighbour with 3-OPT**
+```plaintext
+Initialize tour with nearest neighbour heuristic
+repeat until no improvement
+  for each edge (i, j) in the tour
+    for each edge (k, l) in the tour
+      if 3-OPT condition is satisfied
+        swap edges (i, j) and (k, l)
+return tour
+```
+
+**Tabu Search**
+```plaintext
+Initialize current solution
+repeat until stopping criterion met
+  generate candidate solutions
+  select best candidate not in tabu list
+  update tabu list
+  if candidate is better than current
+    update current solution
+return best solution
+```
+
+**Simulated Annealing**
+```plaintext
+Initialize current solution and temperature
+repeat until stopping criterion met
+  generate new solution by modifying current solution
+  if new solution is better, accept it
+  else accept it with probability based on temperature
+  reduce temperature
+return best solution
+```
+
+
 
