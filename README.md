@@ -81,4 +81,14 @@ Tabu Search	117538	2,985,697,400
 | Simulated Annealing           | 100000          | 16.574                  |
 | Tabu Search                   | 1000            | 2,985,697.4             |
 
+---
+
+## Sensitivity Analysis
+
+Simulated Annealing Cooling Rate: Adjusting the cooling rate had little effect on the total distance for large iterations.
+Tabu Size in Tabu Search: Larger tabu sizes generally resulted in worse solutions due to the algorithm rejecting better solutions that were too similar to previous ones.
+
+## Conclusion
+Simulated Annealing offers a good balance between computational time and solution quality, making it the most efficient algorithm for this TSP instance among those tested.
+
 
