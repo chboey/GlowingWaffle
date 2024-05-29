@@ -58,7 +58,8 @@ repeat until stopping criterion met
 return best solution
 ```
 
-**Performance Assessment**
+##Performance Assessment
+
 The algorithms were assessed based on the time taken (in nanoseconds) and the total distance of the best solution generated.
 
 Comparison of Solutions
