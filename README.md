@@ -58,5 +58,27 @@ repeat until stopping criterion met
 return best solution
 ```
 
+**Performance Assessment**
+The algorithms were assessed based on the time taken (in nanoseconds) and the total distance of the best solution generated.
+
+Comparison of Solutions
+Algorithm	Total Distance (km)	Time Taken (ns)
+Nearest Neighbour with 3-OPT	44665	320,969,400
+Simulated Annealing	59063	1,657,400
+Tabu Search	117538	2,985,697,400
+
+### Comparison of Solutions
+| Algorithm                     | Total Distance (km) | Time Taken (ns)   |
+|-------------------------------|----------------------|---------------------|
+| Nearest Neighbour with 3-OPT | 44665                | 320,969,400         |
+| Simulated Annealing           | 59063                | 1,657,400           |
+| Tabu Search                   | 117538               | 2,985,697,400       |
+
+### Iteration Analysis
+| Algorithm                     | Iterations Used | Time per Iteration (ns) |
+|-------------------------------|-----------------|-------------------------|
+| Nearest Neighbour with 3-OPT | 1               | 320,969,400             |
+| Simulated Annealing           | 100000          | 16.574                  |
+| Tabu Search                   | 1000            | 2,985,697.4             |
 
 
